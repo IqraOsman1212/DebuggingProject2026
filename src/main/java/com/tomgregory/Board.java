@@ -21,9 +21,7 @@ public class Board {
         return false;
     }
 
-    public boolean isSunk() {
-        return hitCount > BATTLESHIP_LENGTH;
-    }
+    public boolean isSunk() { return hitCount >= BATTLESHIP_LENGTH; }
 
     public void reveal() {
         System.out.println("Revealing battleship location");
@@ -46,8 +44,14 @@ public class Board {
     }
 
     private void addBattleship() {
-        Point startPoint = randomGridPoint();
-        Point endPoint = calculateEndPoint(startPoint);
+        Point startPoint;
+        Point endPoint;
+
+        do {
+            startPoint = randomGridPoint();
+            endPoint = calculateEndPoint(startPoint);
+        } while (endPoint.x >= grid.length ||
+                endPoint.y >= grid.length);
 
         for (int x = startPoint.x; x < endPoint.x + 1; x++) {
             for (int y = startPoint.y; y < endPoint.y + 1; y++) {
@@ -61,7 +65,7 @@ public class Board {
     }
 
     private Point calculateEndPoint(Point startPoint) {
-        return switch (getRandomInteger(1)) {
+        return switch (getRandomInteger(2)) {
             case 0 -> getHorizontalEndPoint(startPoint);
             case 1 -> getVerticalEndPoint(startPoint);
             default -> throw new IllegalStateException("Unexpected value.");
